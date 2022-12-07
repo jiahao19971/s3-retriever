@@ -1,0 +1,5 @@
+**.txt
+*.log
+.env
+tmp/**
+!requirements.txt
