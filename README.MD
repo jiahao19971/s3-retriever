@@ -1,5 +1,6 @@
 ## This repo is used to retrieve 1 years logs of data from s3 buckets.
-## This is only meant to read the format for scalyr logs. 
+### This is only meant to read the format for scalyr logs. 
+### Please update it to your own needs
 
 ## Prerequisite
 1. Make to have python >= 3.8.5
