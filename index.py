@@ -15,6 +15,8 @@ profile = os.environ['PROFILE']
 name = os.environ['BUCKET']
 check_key = os.environ['KEYS']
 
+os.system("mkdir tmp")
+
 check_key = check_key.split(",")
 session = boto3.Session(profile_name=profile)
 
