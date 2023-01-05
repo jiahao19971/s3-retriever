@@ -26,6 +26,7 @@ KEYS=
 
 + Date is an optional parameter use to customize the start date the scan should start. 
 + It is format as YYYY-MM-DD or else it will fail
++ By default, it is using 1 year date (today minus 365 days)
 DATE=
 ```
 
