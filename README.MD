@@ -23,6 +23,10 @@ PROFILE=
 + This is being comma separated, so if u have multiple keys that you need to check 
 + just add in comma will do between the key
 KEYS=
+
++ Date is an optional parameter use to customize the start date the scan should start. 
++ It is format as YYYY-MM-DD or else it will fail
+DATE=
 ```
 
 To run the script

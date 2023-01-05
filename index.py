@@ -11,11 +11,18 @@ load_dotenv()
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level='INFO')
 
+try:
+  get_date = datetime.strptime(os.environ['DATE'], "%Y-%m-%d")
+except KeyError:
+  get_date = datetime.now() - relativedelta(years=1)
+
 profile = os.environ['PROFILE']
 name = os.environ['BUCKET']
 check_key = os.environ['KEYS']
+tmp_exist = os.path.exists("./tmp") 
 
-os.system("mkdir tmp")
+if tmp_exist is False:
+  os.system("mkdir tmp")
 
 check_key = check_key.split(",")
 session = boto3.Session(profile_name=profile)
@@ -58,12 +65,13 @@ def check_data(dataname):
           s3.download_fileobj(name, dataname, data)
           break
 
+
 if response['ResponseMetadata']['HTTPStatusCode'] == 200:
   buckets = response["Buckets"]
   files = [i for i in buckets if i['Name'] == name]
   if len(files) > 0:
     bucket = files[0]
-    one_year_ago = datetime.now() - relativedelta(years=1)
+    one_year_ago = get_date
     format_date = one_year_ago.strftime("%Y/%m/%d")
     keys = []
     objs = s3.list_objects_v2(
