@@ -28,6 +28,10 @@ KEYS=
 + It is format as YYYY-MM-DD or else it will fail
 + By default, it is using 1 year date (today minus 365 days)
 DATE=
+
++ Scan period is how long the logs will be scan through
++ Format is YY-MM-DD, for example we want scan 3 days only it will be 00-00-03
+SCAN_PERIOD=
 ```
 
 To run the script

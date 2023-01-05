@@ -1,6 +1,6 @@
 import boto3, os, json
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import gzip
 import logging
@@ -19,6 +19,7 @@ except KeyError:
 profile = os.environ['PROFILE']
 name = os.environ['BUCKET']
 check_key = os.environ['KEYS']
+scan_period = os.environ["SCAN_PERIOD"]
 tmp_exist = os.path.exists("./tmp") 
 
 if tmp_exist is False:
@@ -65,14 +66,26 @@ def check_data(dataname):
           s3.download_fileobj(name, dataname, data)
           break
 
+def get_end_date(start_date, scan_period):
+  period_list = scan_period.split("-")
+  year,month,day = period_list[0], period_list[1],period_list[2]
+  
+  days_in_year = 365 * int(year)
+  days_in_month = 31 * int(month)
+  days = int(day)
+  total_days = days_in_year + days_in_month + days
+  
+  end_date = start_date + timedelta(days=total_days)
+
+  return end_date
+
 
 if response['ResponseMetadata']['HTTPStatusCode'] == 200:
   buckets = response["Buckets"]
   files = [i for i in buckets if i['Name'] == name]
   if len(files) > 0:
     bucket = files[0]
-    one_year_ago = get_date
-    format_date = one_year_ago.strftime("%Y/%m/%d")
+    format_date = get_date.strftime("%Y/%m/%d")
     keys = []
     objs = s3.list_objects_v2(
       Bucket=bucket['Name'],
@@ -100,12 +113,21 @@ if response['ResponseMetadata']['HTTPStatusCode'] == 200:
         gc.collect()
         threads = []
         for z in range(0, 10):
-          thread = threading.Thread(target=check_data, args=(keys[i+z],))
-          thread.start()
-          threads.append(thread)
+          file_name = keys[i+z].split("/")
+          end_date = datetime.date(get_end_date(get_date,scan_period))
+          year,month,day = file_name[0],  file_name[1], file_name[2]
+          date_str = year+"-"+month+"-"+day
+          file_date = datetime.strptime(date_str, '%Y-%m-%d').date()
           
-        for t in threads:
-          t.join()
+          if file_date < end_date:
+            thread = threading.Thread(target=check_data, args=(keys[i+z],))
+            thread.start()
+            threads.append(thread)
+          
+            for t in threads:
+              t.join()
+          else:
+            exit()
   else:
     print("Error: Bucket not found")
 
