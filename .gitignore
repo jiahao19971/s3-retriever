@@ -3,3 +3,4 @@
 .env
 tmp/**
 !requirements.txt
+**.DS_Store
