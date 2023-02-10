@@ -59,12 +59,11 @@ def check_data(dataname):
         exist.append(json.loads(i))
 
     for z in exist:
-      checked_file = z['message']
-
-      if "0" not in checked_file:
-        with open(f"./tmp/{file_name}", 'wb') as data:
-          s3.download_fileobj(name, dataname, data)
-          break
+      if "message" in z:
+        if check_key in z['message']:
+          with open(f"./tmp/{file_name}", 'wb') as data:
+            s3.download_fileobj(name, dataname, data)
+            break
 
 def get_end_date(start_date, scan_period):
   period_list = scan_period.split("-")
