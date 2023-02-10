@@ -60,10 +60,11 @@ def check_data(dataname):
 
     for z in exist:
       if "message" in z:
-        if check_key in z['message']:
-          with open(f"./tmp/{file_name}", 'wb') as data:
-            s3.download_fileobj(name, dataname, data)
-            break
+        for key in check_key:
+          if key in z['message']:
+            with open(f"./tmp/{file_name}", 'wb') as data:
+              s3.download_fileobj(name, dataname, data)
+              break
 
 def get_end_date(start_date, scan_period):
   period_list = scan_period.split("-")

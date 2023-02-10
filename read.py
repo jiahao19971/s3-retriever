@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 check_key = os.environ['KEYS']
+check_key = check_key.split(",")
 folders = [ f.path for f in os.scandir("./tmp")]
 for folder in folders:
   with gzip.GzipFile(folder) as gzipfile:
@@ -23,5 +24,6 @@ for folder in folders:
 
       for i in exist:
         if "message" in i:
-          if check_key in i['message']:
-            print(i['message'])
+          for key in check_key:
+            if key in z['message']:
+              print(i['message'])
